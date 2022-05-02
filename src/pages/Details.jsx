@@ -23,6 +23,7 @@ class Details extends Component {
     const evaluationSubmited = localStorage.getItem('submited-rate');
     if (evaluationSubmited) {
       const ratingElements = evaluationSubmited.split(',');
+      console.log(ratingElements);
       this.setState({
         evaluationSubmited: ratingElements,
       });
@@ -75,24 +76,24 @@ class Details extends Component {
     }
   }
 
-  handleSubmitClick = (event) => {
-    event.preventDefault();
-    const { email, rating, evaluation } = this.state;
-    // console.log(email, rating, evaluation);
-    // localStorage.setItem('email', email);
-    // localStorage.setItem('nota', rating);
-    // localStorage.setItem('avaliação', evaluation);
-    this.setState({
-      evaluationSubmited: [email, rating, evaluation],
-    }, () => {
+    sendEvaluationToLocalStorage = () => {
       const { evaluationSubmited } = this.state;
-      // console.log(evaluationSubmited);
       localStorage.setItem('submited-rate', evaluationSubmited);
       this.setState({
         email: '',
         rating: '',
         evaluation: '',
       });
+    }
+
+  handleSubmitClick = (event) => {
+    event.preventDefault();
+    const { email, rating, evaluation } = this.state;
+    const evaluationFromUser = [email, rating, evaluation];
+    this.setState((prevState) => ({
+      evaluationSubmited: [...prevState.evaluationSubmited, evaluationFromUser],
+    }), () => {
+      this.sendEvaluationToLocalStorage();
     });
   }
 
@@ -102,7 +103,6 @@ class Details extends Component {
       atributo,
       disabled,
       email,
-      // rating,
       evaluation,
       evaluationSubmited,
     } = this.state;
@@ -152,7 +152,6 @@ class Details extends Component {
                 htmlFor={ rate }
                 key={ index }
               >
-                {/* { rate } */}
                 <BsFillStarFill />
                 <input
                   id={ rate }
